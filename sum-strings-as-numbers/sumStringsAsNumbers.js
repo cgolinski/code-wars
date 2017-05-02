@@ -20,8 +20,8 @@ function sumStrings(a,b) {
 	var shorterString;
 	stringA.length >= stringB.length ? (longerString = stringA, shorterString = stringB) : (longerString = stringB, shorterString = stringA);
 
-	stringA === '' ? (stringA = '0') : stringA = stringA;
-	stringB === '' ? (stringB = '0') : stringB = stringB;
+	//stringA === '' ? (stringA = '0') : stringA = stringA;
+	//stringB === '' ? (stringB = '0') : stringB = stringB;
 
 	var reverseSum = '';
 	var carryOver = 0;
@@ -63,6 +63,6 @@ function sumStrings(a,b) {
 		sum = sum.substr(1, sum.length-1);
 	}
 
-	return sum;
-	//console.log(sum);
+	//return sum;
+	console.log(sum);
 }
