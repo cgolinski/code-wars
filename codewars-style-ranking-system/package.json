@@ -1,0 +1,16 @@
+{
+  "name": "codewars-style-ranking-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "codewarsStyleRankingSystem.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^3.19.0",
+    "eslint-plugin-react": "^7.0.0"
+  }
+}
