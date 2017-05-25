@@ -41,52 +41,83 @@ Note: Codewars no longer uses this algorithm for its own ranking system. It uses
 
 */
 
-class User {
-  constructor() {
-    this.rank = -8,
-    this.progress = 0,
-    this.incProgress = function(rankOfCompletedKata) {
-      switch (true) {
-        case (rankOfCompletedKata === 0 || rankOfCompletedKata < -8 || rankOfCompletedKata > 8):
-          throw Error;
-        case (rankOfCompletedKata === this.rank): 
-          if (this.rank !== 8) {
-            this.progress += 3;
-          }
-          break;
-        case (rankOfCompletedKata === (this.rank - 1)):
-          this.progress += 1;
-          break;
-        case (rankOfCompletedKata < (this.rank - 1)):
-          if (rankOfCompletedKata === -1 && this.rank === 1) {
-            this.progress += 1;
-          }
-          break;  
-        case (rankOfCompletedKata > this.rank):
-          var d;
-          if (this.rank <= -1 && rankOfCompletedKata > -1) {
-            d = rankOfCompletedKata - this.rank - 1; 
-          } else {
-            d = rankOfCompletedKata - this.rank;
-          } 
-          this.progress += (10 * d * d);
-          break;
-      }
-      while (this.progress >= 100) {
-        this.rank ++;
-        this.progress -= 100;
-        if (this.rank === 8) {
-          this.progress = 0;
-        }
-      }
-      if (this.rank === 0) {
-        this.rank ++;
-      }
-      //console.log('new rank: ', this.rank);
-      //console.log('new progress: ', this.progress);
-    }; 
+const test = console.assert;
+
+const VALID_RANKS = [-8, -7, -6, -5, -4, -3, -2, -1, 1, 2, 3, 4, 5, 6, 7, 8];
+const MINIMUM_RANK = VALID_RANKS[0];
+const MAXIMUM_RANK = VALID_RANKS[VALID_RANKS.length - 1];
+const INITIAL_PROGRESS = 0;
+const PROGRESS_OF_ONE_RANK = 100;
+
+function getRankDifference(activityRank, currentRank) {
+  return VALID_RANKS.indexOf(activityRank) - VALID_RANKS.indexOf(currentRank);
+}
+
+test(getRankDifference(-8, -8) === 0, 'should work for same negative rank');
+test(getRankDifference(8, 8) === 0, 'should work for same positive rank');
+test(getRankDifference(-8, -7) === -1, 'should work for negative ranks');
+test(getRankDifference(7, 8) === -1, 'should work for positive ranks');
+test(getRankDifference(-1, 1) === -1, 'should work for mixed ranks');
+test(getRankDifference(1, -1) === 1, 'should work if ranks are reversed');
+test(getRankDifference(-8, 8) === -15, 'should work for wide range in ranks');
+
+function enforceActivityRankMustBeValid(activityRank) {
+  if (!VALID_RANKS.includes(activityRank)) {
+    throw new Error('Activity rank is invalid');
   }
 }
 
-// var user = new User();
-// user.incProgress(-1);
+function calculateProgressEarned(activityRank, currentRank) {
+  const difference = getRankDifference(activityRank, currentRank);
+
+  if (currentRank === MAXIMUM_RANK) {
+    return 0;
+  }
+
+  if (difference > 0) {
+    return 10 * Math.pow(Math.abs(difference), 2);
+  } else if (difference === 0) {
+    return 3;
+  } else if (difference === -1) {
+    return 1;
+  } else {
+    return 0;
+  }
+} 
+
+class User {
+  constructor() {
+    this.rank = MINIMUM_RANK;
+    this.progress = INITIAL_PROGRESS;
+  }
+
+  incProgress(activityRank) {
+    enforceActivityRankMustBeValid(activityRank);
+
+    this.progress += calculateProgressEarned(activityRank, this.rank);
+
+    this.incRank(this.rank, this.progress); 
+  } 
+
+  incRank(currentRank, progress) { 
+    
+    while (progress >= PROGRESS_OF_ONE_RANK) {
+      currentRank++;
+      progress -= PROGRESS_OF_ONE_RANK;
+      
+      if (currentRank === MAXIMUM_RANK) {
+        progress = 0;
+      }
+    }
+
+    if (currentRank === 0) {
+      currentRank++;
+    }
+
+    this.progress = progress;
+    this.rank = currentRank;
+  }
+}
+
+var user = new User();
+user.incProgress(-1);
