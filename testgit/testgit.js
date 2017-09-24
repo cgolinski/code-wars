@@ -1,0 +1,1 @@
+const myVar = 'this is a git SSH test';
